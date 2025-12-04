@@ -29,4 +29,10 @@ public class PrestamoController {
         
         return prestamoService.listarPorUsername(username);
     }
+    
+    @PutMapping("/{id}/devolucion")
+    public ResponseEntity<Prestamo> devolverLibro(@PathVariable Long id) {
+        return ResponseEntity.ok(prestamoService.devolverLibro(id));
+    }
 }
+

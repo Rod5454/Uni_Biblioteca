@@ -50,4 +50,22 @@ public class PrestamoService {
         
         return prestamoRepository.findByUsuarioId(usuario.getId());
     }
+
+    public Prestamo devolverLibro(Long prestamoId) {
+        Prestamo prestamo = prestamoRepository.findById(prestamoId)
+                .orElseThrow(() -> new RuntimeException("Préstamo no encontrado"));
+
+        if ("FINALIZADO".equals(prestamo.getEstado())) {
+            throw new RuntimeException("Este préstamo ya fue devuelto");
+        }
+
+        prestamo.setEstado("FINALIZADO");
+        prestamo.setFechaDevolucion(java.time.LocalDate.now());
+
+        Libro libro = prestamo.getLibro();
+        libro.setStock(libro.getStock() + 1);
+        
+        libroRepository.save(libro);
+        return prestamoRepository.save(prestamo);
+    }
 }

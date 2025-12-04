@@ -16,7 +16,7 @@ public class LibroController {
     private LibroService libroService;
 
     @GetMapping
-    public List<Libro> listar() {
+    public List<Libro> listar() {   
         return libroService.listarTodos();
     }
 
