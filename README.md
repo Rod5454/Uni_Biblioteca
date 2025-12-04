@@ -1,7 +1,7 @@
 # Sistema de Gestión de Biblioteca Universitaria (API RESTful)
 
 ## 📋 Descripción del Proyecto
-Backend robusto desarrollado con **Spring Boot 3** y **Java 21** para gestionar los procesos de una biblioteca universitaria. El sistema permite administrar libros, usuarios y el registro de préstamos, implementando seguridad avanzada y persistencia en base de datos relacional.
+Backend robusto desarrollado con **Spring Boot 3** y **Java 21** para gestionar los procesos de una biblioteca universitaria. El sistema permite administrar libros, usuarios y el ciclo completo de préstamos (incluyendo devoluciones), implementando seguridad avanzada y persistencia en base de datos relacional.
 
 ### 🚀 Tecnologías Principales
 * **Framework:** Spring Boot 3 (Web, Data JPA, Security, Validation).
@@ -17,8 +17,8 @@ Backend robusto desarrollado con **Spring Boot 3** y **Java 21** para gestionar 
 * **Autenticación sin estado (Stateless):** No se usan sesiones de servidor.
 * **Protección de Rutas:**
     * `PUBLIC`: Login y Registro.
-    * `ADMIN`: Crear libros, registrar préstamos.
-    * `USUARIO`: Consultar catálogo y su propio historial.
+    * `ADMIN`: Crear libros, registrar préstamos y **registrar devoluciones**.
+    * `USUARIO`: Consultar catálogo y su propio historial de préstamos.
 
 ### 2. Base de Datos (MySQL)
 El sistema utiliza **Hibernate** para mapear automáticamente las entidades:
@@ -45,7 +45,7 @@ El sistema utiliza **Hibernate** para mapear automáticamente las entidades:
     ```
 
 4.  **Configuración Inicial (Roles):**
-    Una vez iniciada la app, ejecutar en MySQL:
+    ⚠️ **Importante:** Al ser la primera ejecución (o tras limpiar la BD), debes ejecutar esto en MySQL Workbench para crear los roles base:
     ```sql
     INSERT INTO roles (nombre) VALUES ('ROLE_ADMIN');
     INSERT INTO roles (nombre) VALUES ('ROLE_USUARIO');
@@ -67,10 +67,11 @@ El sistema utiliza **Hibernate** para mapear automáticamente las entidades:
 | `GET` | `/api/libros` | Listar catálogo. | USER / ADMIN |
 | `POST` | `/api/libros` | Agregar nuevo libro. | **ADMIN** |
 
-### 📖 Préstamos (Requiere Token)
+### 📖 Préstamos y Devoluciones (Requiere Token)
 | Método | Ruta | Descripción | Rol Requerido |
 | :--- | :--- | :--- | :--- |
-| `POST` | `/api/prestamos` | Registrar préstamo (Libro + Usuario). | **ADMIN** |
+| `POST` | `/api/prestamos` | Registrar préstamo (Resta Stock). | **ADMIN** |
+| `PUT` | `/api/prestamos/{id}/devolucion` | **Registrar devolución** (Suma Stock, Finaliza préstamo). | **ADMIN** |
 | `GET` | `/api/prestamos/mis-prestamos` | Ver historial personal. | USER |
 
 ---
